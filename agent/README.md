@@ -1,6 +1,6 @@
 # Kafka Lag Agent
 
-The autonomous agent server that connects to the [MCP Server](../servers/README.md) and monitors Kafka consumer group lag every 60 seconds. Uses an LLM (via Ollama) to investigate and remediate lag automatically.
+The autonomous agent server that connects to the [MCP Server](../servers/README.md) and monitors Kafka consumer group lag every 60 seconds. Uses an LLM (Groq by default, Ollama as alternative) to investigate and remediate lag automatically.
 
 ## How It Works
 
@@ -37,8 +37,9 @@ Each phase saves a checkpoint to H2. If the agent crashes mid-run, it resumes fr
 ## Prerequisites
 
 - MCP Server running on `http://localhost:8080`
-- Ollama running on `http://localhost:11434` with `qwen2.5:14b` pulled
 - Java 25
+- **Groq** (default): set `GROQ_API_KEY` env var
+- **Ollama** (alternative): running on `http://localhost:11434` with `qwen2.5:14b` pulled; remove `spring.profiles.active: groq` from `application.yml`
 
 ## Running
 
@@ -59,7 +60,9 @@ Each phase saves a checkpoint to H2. If the agent crashes mid-run, it resumes fr
 | `agent.critical-threshold` | `10000` | Total lag for CRITICAL |
 | `agent.remediation.auto-reset-enabled` | `false` | Allow automatic offset reset |
 | `agent.remediation.max-actions-per-run` | `3` | Max actions per cycle (phased mode) |
-| `spring.ai.ollama.chat.options.model` | `qwen2.5:14b` | Ollama model to use |
+| `spring.ai.ollama.chat.options.model` | `qwen2.5:14b` | Ollama model (when not using `groq` profile) |
+| `spring.ai.openai.chat.options.model` | `llama-3.3-70b-versatile` | Groq model (configured in `application-groq.yml`) |
+| `GROQ_API_KEY` | — | Groq API key (required when `groq` profile is active) |
 | `spring.ai.mcp.client.sse.connections.kafka.url` | `http://localhost:8080/sse` | MCP server SSE endpoint |
 
 ## Remediation Safety Rules

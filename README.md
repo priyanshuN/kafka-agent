@@ -10,7 +10,7 @@ Agent Server (:8081)
   │  [loop every 60s]
   │  LLM autonomously calls tools → investigates → remediates
   │
-  │  ChatClient (Spring AI) + qwen2.5:14b (Ollama)
+  │  ChatClient (Spring AI) + llama-3.3-70b-versatile (Groq, default) or qwen2.5:14b (Ollama)
   │
   └── MCP Client ──SSE──▶ MCP Server (:8080)
                                 │
@@ -56,8 +56,8 @@ Checkpoints are saved to H2 after each phase — if the agent crashes mid-run, i
 
 - Java 25 (via IntelliJ SDK manager)
 - Kafka running on `localhost:9092`
-- [Ollama](https://ollama.com) running on `localhost:11434`
-- Model pulled: `ollama pull qwen2.5:14b`
+- **Groq** (default): set `GROQ_API_KEY` env var — get a key at [console.groq.com](https://console.groq.com)
+- **Ollama** (alternative): [Ollama](https://ollama.com) running on `localhost:11434` with `ollama pull qwen2.5:14b`; remove `spring.profiles.active: groq` from `agent/src/main/resources/application.yml`
 
 ## Getting Started
 
@@ -73,6 +73,7 @@ cd servers/
 ### 2. Start Agent Server
 ```bash
 cd agent/
+export GROQ_API_KEY=your_key_here   # required for default groq profile
 ./mvnw spring-boot:run
 # Runs on http://localhost:8081
 ```
@@ -129,7 +130,8 @@ Watch agent logs — next cycle detects lag and fires alerts automatically.
 - **Java 25** + **Spring Boot 4.0.5**
 - **Spring AI 2.0.0-M4** — MCP server/client, ChatClient, tool calling
 - **Model Context Protocol (MCP)** over SSE transport
-- **Ollama** — local LLM inference (`qwen2.5:14b`)
+- **Groq** — cloud LLM inference via OpenAI-compatible API (`llama-3.3-70b-versatile`, default profile)
+- **Ollama** — local LLM inference (`qwen2.5:14b`, alternative; remove `groq` profile to use)
 - **Apache Kafka 4.x** — consumer group monitoring via Admin API
 - **H2** — embedded database for checkpoints and paused topic state
 - **Lombok** — boilerplate reduction (`@Data`, `@Builder`)
