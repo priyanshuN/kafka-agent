@@ -77,7 +77,16 @@ cd agent/
 # Runs on http://localhost:8081
 ```
 
-### 3. Create artificial lag for testing
+### 3. H2 Console (debugging)
+
+Both servers expose an H2 console for inspecting the embedded databases:
+
+- MCP Server — `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:file:./data/mcp-server`)
+- Agent — `http://localhost:8081/h2-console` (JDBC URL: `jdbc:h2:file:./data/agent-checkpoint`)
+
+Useful for inspecting paused topic state (`PAUSED_TOPIC` table) and agent checkpoint recovery state (`CHECKPOINT_ENTITY` table).
+
+### 4. Create artificial lag for testing
 ```bash
 # Create topic
 kafka-topics --create --topic test-lag-topic --partitions 3 --replication-factor 1 --bootstrap-server localhost:9092
@@ -113,6 +122,7 @@ Watch agent logs — next cycle detects lag and fires alerts automatically.
 |---|---|---|
 | `spring.kafka.bootstrap-servers` | `localhost:9092` | Kafka broker address |
 | `server.port` | `8080` | MCP server port |
+| `spring.ai.mcp.server.instructions` | (see yml) | System prompt guiding the LLM on tool usage order |
 
 ## Tech Stack
 
@@ -122,6 +132,7 @@ Watch agent logs — next cycle detects lag and fires alerts automatically.
 - **Ollama** — local LLM inference (`qwen2.5:14b`)
 - **Apache Kafka 4.x** — consumer group monitoring via Admin API
 - **H2** — embedded database for checkpoints and paused topic state
+- **Lombok** — boilerplate reduction (`@Data`, `@Builder`)
 
 ## License
 
