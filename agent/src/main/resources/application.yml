@@ -1,6 +1,8 @@
 spring:
   application:
     name: kafka-lag-agent
+  profiles:
+    active: groq
 
   ai:
     mcp:
