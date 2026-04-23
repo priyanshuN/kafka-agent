@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: kafka-mcp-server
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  ai:
+    mcp:
+      server:
+        name: kafka-lag-monitor
+        version: 1.0.0
+        instructions: >
+          This MCP server exposes Kafka consumer group monitoring and remediation tools.
+          Start by calling getLagSummary to get a full picture of all consumer groups.
+          Then investigate specific groups with getPartitionLag or checkLagThreshold.
+          Use remediation tools only when lag is confirmed CRITICAL and the group has no active members.
+
+  datasource:
+    url: jdbc:h2:file:./data/mcp-server;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    com.mcp.servers: DEBUG
+    org.springframework.ai: INFO
+    org.apache.kafka: WARN

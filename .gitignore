@@ -1,0 +1,38 @@
+# Maven build output
+target/
+**/target/
+
+# H2 database files
+data/
+**/data/
+
+# IDE
+.idea/
+**/.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# Claude Code local config
+.claude/
+
+# Stray build artifacts at root
+META-INF/
+org/
+
+# OS
+.DS_Store
+*.log
+
+# Spring Initializr boilerplate
+HELP.md
+**/HELP.md
+
+# Maven wrapper jar
+.mvn/wrapper/maven-wrapper.jar
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Environment files
+.env
+.env.local
